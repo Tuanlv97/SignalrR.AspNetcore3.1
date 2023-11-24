@@ -1,0 +1,187 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Scripts
+{
+      <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+       <script type="text/javascript">
+
+        var connection = new signalR.HubConnectionBuilder().configureLogging(signalR.LogLevel.Debug).withAutomaticReconnect([1000, 1000, 3000, 3000]).withUrl("https://localhost:5001/MyHub").build();
+
+            function statusShow() {
+                $("#conStatus").text(connection.connectionState);
+            }
+
+            function start() {
+                connection.start().then(() => {
+                    $("#loading").hide();
+                    statusShow();
+                    connection.invoke("GetNamesByGroup").catch((err) => console.log(err));;
+                }).catch((err) => {
+                    $("#loading").show();
+                    console.log(err);
+                    setTimeout(() => start(), 2000);
+                });
+            }
+
+            connection.onreconnecting(err => {
+                $("#loading").show();
+                statusShow();
+                console.log("onreconnection:", err);
+            });
+
+            connection.onreconnected(connectionId => {
+                $("#loading").hide();
+                statusShow();
+                console.log("connectionId:", connectionId);
+            });
+
+            connection.onclose(() => {
+                $("#loading").hide();
+                statusShow();
+                start();
+            });
+
+            statusShow();
+
+            start();
+
+            $("#btnNameSave ").click(() => {
+                connection.invoke("SendName", $("#txtName").val()).catch((err) => console.log(err));
+            });
+
+            $("#btnProduct").click(() => {
+                let product = {"Id" : 1, "Name": "Anh Tuan", "PriceL": 500, "Stock":200};
+                connection.invoke("SendProduct", product);
+            })
+
+            connection.on("ReceiveName",
+                (name) => {
+                    $("#nameList").append('<li class="list-group-item">' + name + '</li>')
+                });
+            connection.on("ReceiveClientCount",
+                (clientCount) => {
+                    $("#clientCount").text(clientCount);
+                });
+            connection.on("Notify",
+                (message) => {
+                    $("#notify").text(message);
+                    $("#alertNotify").show();
+                });
+            connection.on("Error",
+                (message) => {
+                    $("#error").text(message);
+                    $("#alertError").show();
+                });
+
+            connection.on("ReceiveNames",
+            (names) => {
+                for (var i = 0; i < names.length; i++) {
+                    $("#nameList").append('<li class="list-group-item">' + names[i] + '</li>')
+                }
+            });
+
+            $("#btnNameTeam ").click(() => {
+                let name = $("#txtName").val();
+                let teamName = $("input[type=radio]:checked").val();
+                if ((name !== "" && name !== undefined) && (teamName !== "" && teamName !== undefined)) {
+                    connection.invoke("SendNameByGroup", name, teamName).catch((err) => console.log(err));
+                }
+            });
+
+            $("input[type=radio]").change(() => {
+                let teamName = $("input[type=radio]:checked").val();
+                //console.log(teamName);
+                if (teamName == "Team A") {
+                    connection.invoke("AddToGroup", teamName).catch((err) => console.log(err));
+                    connection.invoke("RemoveToGroup", "Team B").catch((err) => console.log(err));
+                } else {
+                    connection.invoke("AddToGroup", teamName).catch((err) => console.log(err));
+                    connection.invoke("RemoveToGroup", "Team A").catch((err) => console.log(err));
+                }
+            });
+
+            connection.on("ReceiveMessageByGroup",
+                (name, teamId) => {
+                    console.log(name + " " + teamId);
+                    let listName;
+                    if (teamId == 1) {
+                        listName = "ATeamList";
+                    } else {
+                        listName = "BTeamList";
+                    }
+                    $("#" + listName).append('<li class="list-group-item">' + name + '</li>');
+                });
+
+            connection.on("ReceiveNamesByGroup",
+                (teams) => {
+                    for (var i = 0; i < teams.length; i++) {
+                        var listName;
+                        if (teams[i].teamName == "Team A") {
+                            listName = "ATeamList";
+                        } else {
+                            listName = "BTeamList";
+                        }
+                        for (var j = 0; j < teams[i].users.length; j++) {
+                            $("#" + listName).append('<li class="list-group-item">' + teams[i].users[j].name + '</li>');
+                        }
+                    }
+                });
+       </script>
+
+}
+
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <input class="form-control" type="text" id="txtName" />
+        <h6>Bağlı kullanıcı: <strong id="clientCount"></strong></h6>
+        <hr />
+        <button class="btn btn-light" id="btnNameSave">İsim kaydet</button>
+        <button class="btn btn-warning" id="btnNameTeam">İsim kaydet(Takım)</button>
+        <hr />
+        <div class="alert alert-success" id="alertNotify">
+            <strong id="notify"></strong>
+        </div>
+        <div class="alert alert-danger" id="alertError">
+            <strong id="error"></strong>
+        </div>
+        <div class="alert alert-info">
+            <div class="float-left">  Bağlantı durumu:<strong id="conStatus"></strong></div>
+            <div class="float-right">
+                <div class="spinner-border" role="status" id="loading">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="TeamGroup" value="Team A" />
+            <label class="form-check-label">A Takımı</label>
+        </div>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="TeamGroup" value="Team B" />
+            <label class="form-check-label">B Takımı</label>
+        </div>
+    </div>
+    <div class="col-md-8 offset-2">
+        <div class="row">
+            <div class="col-md-6">
+                <ul id="ATeamList" class="list-group"></ul>
+            </div>
+            <div class="col-md-6">
+                <ul id="BTeamList" class="list-group"></ul>
+            </div>
+        </div>
+
+    </div>
+
+</div>
