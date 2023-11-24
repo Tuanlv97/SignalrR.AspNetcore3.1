@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SingalR.Server", "src\Singa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR.Client", "src\SignalR.Client\SignalR.Client.csproj", "{B9212551-A36F-4FD6-90D3-9F4A82C27E7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CovidChart.API", "src\CovidChart.API\CovidChart.API.csproj", "{1FCAD4C5-8994-49E3-A2EA-5F07CB85710C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{B9212551-A36F-4FD6-90D3-9F4A82C27E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9212551-A36F-4FD6-90D3-9F4A82C27E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9212551-A36F-4FD6-90D3-9F4A82C27E7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FCAD4C5-8994-49E3-A2EA-5F07CB85710C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FCAD4C5-8994-49E3-A2EA-5F07CB85710C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FCAD4C5-8994-49E3-A2EA-5F07CB85710C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FCAD4C5-8994-49E3-A2EA-5F07CB85710C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B0CEDAB5-05C6-4F1F-A100-BB00354EA2DF} = {2460BB53-5FD8-4B98-97CD-AE9032C47794}
 		{B9212551-A36F-4FD6-90D3-9F4A82C27E7E} = {2460BB53-5FD8-4B98-97CD-AE9032C47794}
+		{1FCAD4C5-8994-49E3-A2EA-5F07CB85710C} = {2460BB53-5FD8-4B98-97CD-AE9032C47794}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {39C0C6EF-6453-414A-AA4C-47AB8B0CD169}
