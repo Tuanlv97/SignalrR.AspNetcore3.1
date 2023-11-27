@@ -1,0 +1,54 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Covid19Show";
+}
+
+@section Scripts
+{
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript">
+        var arr = [['Date', 'Istanbul', 'Ankara', 'Izmir', 'Konya', 'Antalya']];
+        var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44364/CovidHub").build();
+
+        connection.start().then(() => {
+            connection.invoke("GetCovidList").catch((err) => console.log(err));
+        });
+
+        connection.on("ReceiveCovidList",
+            (covidList) => {
+                console.log(covidList);
+                drawChart(covidList);
+            });
+
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart(covidList) {
+            arr = arr.splice(0, 1);
+
+            for (var i = 0; i < covidList.length; i++) {
+                var data = covidList[i];
+                arr.push([data.covidDate, ...data.counts]);
+
+            }
+            var data = google.visualization.arrayToDataTable(arr);
+
+            var options = {
+                title: 'Covid19 Chart',
+                curveType: 'function',
+                legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+        }
+
+    </script>
+}
+
+<div id="curve_chart" style="width: 1200px; height: 500px"></div>
