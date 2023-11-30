@@ -38,7 +38,7 @@ namespace CovidChart.API
             services.AddScoped<CovidService>();
 
             string dbConnectionString = Configuration.GetConnectionString("CovidChartContext");
-            services.AddDbContext<AppDbContext>(opt => opt.UseMySql(dbConnectionString));
+            services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(dbConnectionString));
 
 
             services.AddControllers();
