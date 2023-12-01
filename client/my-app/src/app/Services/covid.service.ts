@@ -7,7 +7,7 @@ import { Covid } from '../Models/Covid.model';
 })
 export class CovidService {
 
-  covidChartList = new Array();
+  public covidChartList = new Array();
   private hubConnection!: signalR.HubConnection;
   constructor() { }
 
@@ -18,7 +18,7 @@ export class CovidService {
 
   startConnection() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl("").build();
+    .withUrl("https://localhost:44318/CovidHub").build();
 
     this.hubConnection.start()
     .then(() => 

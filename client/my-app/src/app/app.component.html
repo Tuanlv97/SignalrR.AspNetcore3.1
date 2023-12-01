@@ -1,11 +1,11 @@
 <router-outlet></router-outlet>
 <google-chart
-  [title]="Covid19 Chart"
-  [type]="LineChart"
+  [type]="chartType"
+  [data]="covidService.covidChartList"
   [width]="1000"
   [height]="700"
-  [data]="covidService.covidChartList"
   [columns]="columnNames"
   [options]="options"
+  [title]="'ABc'"
 >
 </google-chart>

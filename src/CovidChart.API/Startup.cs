@@ -2,17 +2,10 @@ using CovidChart.API.Hubs;
 using CovidChart.API.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CovidChart.API
 {
@@ -31,7 +24,7 @@ namespace CovidChart.API
 
             services.AddCors(options =>
             {
-                options.AddPolicy("CorsAll", builder => builder.WithOrigins("https://localhost:44316", "http://localhost:3000/", "https://localhost:5001/", "http://localhost:5000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+                options.AddPolicy("CorsAll", builder => builder.WithOrigins("https://localhost:44316", "http://localhost:4200", "https://localhost:5001/", "http://localhost:5000").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             });
 
             services.AddSignalR();
